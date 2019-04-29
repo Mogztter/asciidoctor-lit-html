@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Asciidoctor x lit-html</title>
+  <script src="node_modules/@asciidoctor/core/dist/browser/asciidoctor.js"></script>
+</head>
+<body>
+  <textarea id="input" rows="5" cols="33">
+= Sample document
+
+This is a preamble.
+
+== First section
+
+This is a paragraph.
+This is another paragraph.
+  </textarea>
+  <div id="output"></div>
+  <script type="module">
+    import {html, render} from './node_modules/lit-html/lit-html.js';
+
+    const asciidoctor = Asciidoctor()
+
+    const paragraphView = (block) => html`<p>${block.getContent()}</p>`
+
+    const templates = {
+      paragraph: (block) => html`<p>${block.getContent()}</p>`,
+      section: (block) => html`<section><h2>${block.getTitle()}</h2>${blocksView(block.getBlocks())}</section>`,
+      preamble: (block) => html`<div class="preamble">${blocksView(block.getBlocks())}</div>`
+    }
+    const blocksView = (blocks) => blocks.map((block) => {
+      const nodeName = block.getNodeName()
+      return templates[nodeName](block)
+    })
+    const template = (doc) => html`<h1>${doc.getTitle()}!</h1>
+<main>
+${blocksView(doc.getBlocks())}
+</main>`
+
+    const inputElement = document.getElementById('input')
+    const convert = () => {
+      console.time('load')
+      let doc = asciidoctor.load(inputElement.value)
+      console.timeEnd('load')
+      console.time('render')
+      render(template(doc), outputElement)
+      console.timeEnd('render')
+    }
+
+    const outputElement = document.getElementById('output')
+    inputElement.addEventListener('change', () => convert())
+    inputElement.addEventListener('keyup', () => convert())
+  </script>
+</body>
+</html>
