@@ -1,0 +1,8 @@
+#output {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+#input {
+    height: 100vh;
+}

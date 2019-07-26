@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "asciidoctor": "^2.0.2",
+    "bulma": "^0.7.5",
     "lit-html": "^1.0.0"
   }
 }
